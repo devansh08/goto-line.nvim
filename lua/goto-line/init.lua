@@ -35,6 +35,9 @@ function M.GotoLine()
             ---@type uv.fs_stat.result|nil, string|nil, any
             local stat = vim.uv.fs_stat(filename)
             if stat ~= nil and stat.type == "file" then
+              -- Escape whitespace
+              filename = filename:gsub(" ", "\\ ")
+
               vim.cmd("e " .. filename)
               vim.cmd(line_number)
 
