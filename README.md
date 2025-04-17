@@ -12,7 +12,14 @@ For example, with `lazy.nvim`:
 {
   "devansh08/goto-line.nvim",
   branch = "main",
-  opts = {},
+  ---@type GotoLineOpts
+  opts = {
+    -- define the command to open the file [default = "drop"]
+    -- - `edit`: will open the file in the current buffer (`:edit`)
+    -- - `drop`: will switch to an existing buffer which has the file already open;
+    --         else it will open the file in the current buffer (`:drop`)
+    open_cmd = "drop",
+  },
 }
 ```
 

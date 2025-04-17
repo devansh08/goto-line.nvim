@@ -1,5 +1,14 @@
 local M = {}
 
+---@type GotoLineOpts|{}
+M.opts = {}
+
+---@type table<OpenCmd, string>
+M.open_cmd = {
+  ["edit"] = "e",
+  ["drop"] = "drop",
+}
+
 function M.GotoLine()
   ---@type string
   local line = vim.fn.getline(".")
@@ -38,7 +47,7 @@ function M.GotoLine()
               -- Escape whitespace
               filename = filename:gsub(" ", "\\ ")
 
-              vim.cmd("e " .. filename)
+              vim.cmd(M.open_cmd[M.opts.open_cmd] .. " " .. filename)
               vim.cmd(line_number)
 
               matched = true
@@ -51,7 +60,21 @@ function M.GotoLine()
   end
 end
 
-function M.setup()
+---@alias OpenCmd "edit"|"drop"
+
+---@class GotoLineOpts
+--- define the command to open the file [default = "drop"]
+--- - `edit`: will open the file in the current buffer (`:edit`)
+--- - `drop`: will switch to an existing buffer which has the file already open;
+---         else it will open the file in the current buffer (`:drop`)
+---@field open_cmd OpenCmd
+
+---@param opts GotoLineOpts
+function M.setup(opts)
+  M.opts = {
+    open_cmd = opts.open_cmd or "drop",
+  }
+
   vim.api.nvim_create_user_command("GotoLine", M.GotoLine, {})
 end
 
