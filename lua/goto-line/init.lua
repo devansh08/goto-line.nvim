@@ -58,7 +58,7 @@ function M.GotoLine()
 
           if filename ~= nil and line_number ~= nil then
             -- Expand `~` as uv.fs_stat does not expand it
-            filename = vim.fn.expand(filename)
+            filename = vim.fn.expand(filename):match("^%s*(.-)%s*$")
 
             ---@type uv.fs_stat.result|nil, string|nil, any
             local stat = vim.uv.fs_stat(filename)
