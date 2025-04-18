@@ -4,7 +4,7 @@ local M = {}
 M.opts = {}
 
 ---@type table<OpenCmd, string>
-M.open_cmd = {
+M.open_cmd_map = {
   ["edit"] = "e",
   ["drop"] = "drop",
   ["tab-drop"] = "tab drop",
@@ -90,7 +90,15 @@ function M.GotoLine(args)
               -- Escape whitespace
               filename = filename:gsub(" ", "\\ ")
 
-              vim.cmd(M.open_cmd[M.opts.open_cmd] .. " " .. filename)
+              if M.opts.pre_jump ~= nil and M.opts.pre_jump ~= "" then
+                if type(M.opts.pre_jump) == "string" then
+                  vim.cmd(M.opts.pre_jump)
+                else
+                  M.opts.pre_jump()
+                end
+              end
+
+              vim.cmd(M.open_cmd_map[M.opts.open_cmd] .. " " .. filename)
               if col_number ~= "" then
                 vim.api.nvim_win_set_cursor(0, { tonumber(line_number), col_number - 1 })
               else
@@ -115,18 +123,22 @@ end
 ---@alias OpenCmd "edit"|"drop"
 
 ---@class GotoLineOpts
---- define the command to open the file [default = "drop"]
+--- Define the command to open the file [default = "drop"]
 --- - `edit`: will open the file in the current buffer (`:help :edit`)
 --- - `drop`: will switch to an existing buffer which has the file already open;
 ---         else it will open the file in the current buffer (`:help :drop`)
 --- - `tab-drop`: will switch to an existing tab page which has the file already open;
 ---             else it will open the file in the current tab-page (`:help :drop`)
 ---@field open_cmd OpenCmd
+--- Define the command or function to run before the jump [optional]
+--- Eg.: If running from terminal buffer (like `ToggleTerm`), close the buffer before jump
+---@field pre_jump string|function?
 
 ---@param opts GotoLineOpts
 function M.setup(opts)
   M.opts = {
     open_cmd = opts.open_cmd or "drop",
+    pre_jump = opts.pre_jump or nil,
   }
 
   vim.api.nvim_create_user_command("GotoLine", M.GotoLine, {

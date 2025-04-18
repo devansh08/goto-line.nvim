@@ -14,13 +14,16 @@ For example, with `lazy.nvim`:
   branch = "main",
   ---@type GotoLineOpts
   opts = {
-    -- define the command to open the file [default = "drop"]
+    -- Define the command to open the file [default = "drop"]
     -- - `edit`: will open the file in the current buffer (`:help :edit`)
     -- - `drop`: will switch to an existing buffer which has the file already open;
     --         else it will open the file in the current buffer (`:help :drop`)
     -- - `tab-drop`: will switch to an existing tab page which has the file already open;
     --             else it will open the file in the current tab-page (`:help :drop`)
     open_cmd = "drop",
+    -- Define the command or function to run before the jump [optional]
+    -- Eg.: If running from terminal buffer (like `ToggleTerm`), close the buffer before jump
+    pre_jump = nil,
   },
 }
 ```
