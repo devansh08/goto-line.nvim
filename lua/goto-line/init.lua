@@ -7,6 +7,7 @@ M.opts = {}
 M.open_cmd = {
   ["edit"] = "e",
   ["drop"] = "drop",
+  ["tab-drop"] = "tab drop",
 }
 
 function M.GotoLine()
@@ -64,9 +65,11 @@ end
 
 ---@class GotoLineOpts
 --- define the command to open the file [default = "drop"]
---- - `edit`: will open the file in the current buffer (`:edit`)
+--- - `edit`: will open the file in the current buffer (`:help :edit`)
 --- - `drop`: will switch to an existing buffer which has the file already open;
----         else it will open the file in the current buffer (`:drop`)
+---         else it will open the file in the current buffer (`:help :drop`)
+--- - `tab-drop`: will switch to an existing tab page which has the file already open;
+---             else it will open the file in the current tab-page (`:help :drop`)
 ---@field open_cmd OpenCmd
 
 ---@param opts GotoLineOpts
