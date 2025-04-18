@@ -3,8 +3,6 @@
 Simple plugin that opens the file and goes to a line from the filepath and line number, under the cursor (extending builtin `gf`).
 It looks for paths in the common error stacktrace format like `<filename>:<line_number>` or vimgrep format like `<filename>:<line_number>:<col_number>`, where `filename` can be absolute or relative, and with or without spaces (tries for best match).
 
-Best matching is done with preference for vimgrep format over stacktrace format and considering spaces over not considering spaces.
-
 ## Installation
 
 Install using your favorite package manager, like any other plugin.
@@ -30,3 +28,7 @@ For example, with `lazy.nvim`:
 ## Usage
 
 The plugin provides the command `:GotoLine`, which will attempt to open the file and goto line, based on the current cursor position.
+
+Best matching is done with preference for vimgrep format over stacktrace format and considering spaces over not considering spaces.
+
+In case the plugin is not able to match any valid file path, it will fallback to vim's builtin `gf`.

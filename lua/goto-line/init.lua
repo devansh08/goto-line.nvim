@@ -81,6 +81,11 @@ function M.GotoLine()
       end
     end
   end
+
+  -- Falling back to builtin `gf`
+  if matched == false then
+    vim.api.nvim_feedkeys("gf", "n", false)
+  end
 end
 
 ---@alias OpenCmd "edit"|"drop"
