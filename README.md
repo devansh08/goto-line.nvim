@@ -1,6 +1,6 @@
 # goto-line.nvim
 
-Simple plugin that opens the file and goes to a line from the filepath and line number, under the cursor (extending builtin `gf`).
+Simple plugin that opens the file and goes to a line from the filepath and line number, under the cursor (extending builtin `gf`) or from visual selection.
 It looks for paths in the common error stacktrace format like `<filename>:<line_number>` or vimgrep format like `<filename>:<line_number>:<col_number>`, where `filename` can be absolute or relative, and with or without spaces (tries for best match).
 
 ## Installation
@@ -27,7 +27,7 @@ For example, with `lazy.nvim`:
 
 ## Usage
 
-The plugin provides the command `:GotoLine`, which will attempt to open the file and goto line, based on the current cursor position.
+The plugin provides the command `:GotoLine`, which will attempt to open the file and goto line, based on the current cursor position or on the visual selection.
 
 Best matching is done with preference for vimgrep format over stacktrace format and considering spaces over not considering spaces.
 
