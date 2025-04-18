@@ -17,6 +17,10 @@ function M.GotoLine()
   local col = vim.fn.col(".")
 
   ---@type string
+  local file_path_vimgrep_matcher = "[^%%#&{}\\<>*%?$!:@+`|=^]+:%d+:%d+"
+  ---@type string
+  local file_path_vimgrep_matcher_no_spaces = "[^%%#&{}\\<>*%?$!:@+`|=^%s]+:%d+:%d+"
+  ---@type string
   local file_path_matcher = "[^%%#&{}\\<>*%?$!:@+`|=^]+:%d+"
   ---@type string
   local file_path_matcher_no_spaces = "[^%%#&{}\\<>*%?$!:@+`|=^%s]+:%d+"
@@ -29,15 +33,29 @@ function M.GotoLine()
   local matched = false
   for _, prefix in ipairs(matcher_prefix) do
     if not matched then
-      for _, pattern in ipairs({ file_path_matcher, file_path_matcher_no_spaces }) do
+      -- Check for vimgrep style first
+      for i, pattern in ipairs({
+        file_path_vimgrep_matcher,
+        file_path_vimgrep_matcher_no_spaces,
+        file_path_matcher,
+        file_path_matcher_no_spaces,
+      }) do
         ---@type integer|nil, integer|nil
         local start, finish = line:find(prefix .. pattern)
 
         if start ~= nil and col >= start and col <= finish then
           ---@type string
           local str = line:sub(start, finish)
-          ---@type string, string
-          local filename, line_number = str:match("(.*):(%d+)")
+          ---@type string, string, string
+          local filename, line_number, col_number = "", "", ""
+
+          -- Vimgrep style
+          if i <= 2 then
+            filename, line_number, col_number = str:match("(.*):(%d+):(%d+)")
+          else
+            filename, line_number = str:match("(.*):(%d+)")
+          end
+
           if filename ~= nil and line_number ~= nil then
             -- Expand `~` as uv.fs_stat does not expand it
             filename = vim.fn.expand(filename)
@@ -49,7 +67,11 @@ function M.GotoLine()
               filename = filename:gsub(" ", "\\ ")
 
               vim.cmd(M.open_cmd[M.opts.open_cmd] .. " " .. filename)
-              vim.cmd(line_number)
+              if col_number ~= "" then
+                vim.api.nvim_win_set_cursor(0, { tonumber(line_number), col_number - 1 })
+              else
+                vim.cmd(line_number)
+              end
 
               matched = true
               break

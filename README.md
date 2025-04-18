@@ -1,7 +1,9 @@
 # goto-line.nvim
 
 Simple plugin that opens the file and goes to a line from the filepath and line number, under the cursor (extending builtin `gf`).
-It looks for paths in the common error stacktrace format like `<filename>:<line_number>`, where `filename` can be absolute or relative, and with or without spaces (tries for best match).
+It looks for paths in the common error stacktrace format like `<filename>:<line_number>` or vimgrep format like `<filename>:<line_number>:<col_number>`, where `filename` can be absolute or relative, and with or without spaces (tries for best match).
+
+Best matching is done with preference for vimgrep format over stacktrace format and considering spaces over not considering spaces.
 
 ## Installation
 
