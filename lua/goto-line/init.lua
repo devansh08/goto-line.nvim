@@ -1,17 +1,17 @@
 local M = {}
 
 ---@type GotoLineOpts|{}
-M.opts = {}
+local global_opts = {}
 
 ---@type table<OpenCmd, string>
-M.open_cmd_map = {
+local open_cmd_map = {
   ["edit"] = "e",
   ["drop"] = "drop",
   ["tab-drop"] = "tab drop",
 }
 
 ---@param args vim.api.keyset.create_user_command.command_args
-function M.GotoLine(args)
+local function GotoLine(args)
   local is_visual = args.range > 0
 
   ---@type string
@@ -90,15 +90,15 @@ function M.GotoLine(args)
               -- Escape whitespace
               filename = filename:gsub(" ", "\\ ")
 
-              if M.opts.pre_jump ~= nil and M.opts.pre_jump ~= "" then
-                if type(M.opts.pre_jump) == "string" then
-                  vim.cmd(M.opts.pre_jump)
+              if global_opts.pre_jump ~= nil and global_opts.pre_jump ~= "" then
+                if type(global_opts.pre_jump) == "string" then
+                  vim.cmd(global_opts.pre_jump)
                 else
-                  M.opts.pre_jump()
+                  global_opts.pre_jump()
                 end
               end
 
-              vim.cmd(M.open_cmd_map[M.opts.open_cmd] .. " " .. filename)
+              vim.cmd(open_cmd_map[global_opts.open_cmd] .. " " .. filename)
               if col_number ~= "" then
                 vim.api.nvim_win_set_cursor(0, { tonumber(line_number), col_number - 1 })
               else
@@ -136,12 +136,12 @@ end
 
 ---@param opts GotoLineOpts
 function M.setup(opts)
-  M.opts = {
+  global_opts = {
     open_cmd = opts.open_cmd or "drop",
     pre_jump = opts.pre_jump or nil,
   }
 
-  vim.api.nvim_create_user_command("GotoLine", M.GotoLine, {
+  vim.api.nvim_create_user_command("GotoLine", GotoLine, {
     range = true,
   })
 end
