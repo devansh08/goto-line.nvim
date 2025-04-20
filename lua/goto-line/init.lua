@@ -120,7 +120,7 @@ function M.GotoLine(args)
   end
 end
 
----@alias OpenCmd "edit"|"drop"
+---@alias OpenCmd "edit"|"drop"|"tab-drop"
 
 ---@class GotoLineOpts
 --- Define the command to open the file [default = "drop"]
